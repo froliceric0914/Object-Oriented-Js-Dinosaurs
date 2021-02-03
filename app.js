@@ -4,20 +4,26 @@
 
     // Create Dino Objects
 
-
     // Create Human Object
 
     // Use IIFE to get human data from form
-    const getHumanData = (function (){
-        const humanData = {
-            name: document.getElementById("name"),
-            height: document.getElementById("feet") + document.getElementById("inches"),
-            weight: document.getElementById("inches"),
-            diet: document.getElementById("diet"),
-        }
-        
-        return humanData
+const parseValue = (value) =>{
+    document.getElementById(value).value
+}
+
+const getHumanData = function(){
+    const humanData= { //this will be refined as the object above
+        name: parseValue("name"),
+        height: parseValue("feet") + parseValue("inches"),
+        weight: parseValue("inches"),
+        diet: parseValue("diet")
+    }
+
+    // console.log("humanData", humanData)
+    return (function(){
+        return humanData;  
     })()
+}
 
     // Create Dino Compare Method 1
     // NOTE: Weight in JSON file is in lbs, height in inches. 
@@ -41,6 +47,8 @@
 // On button click, prepare and display infographic
 function logSubmit(event) {
     event.preventDefault();
+    const human = getHumanData();
+    console.log("humanData", human)
     console.log("hello")
   }
   
