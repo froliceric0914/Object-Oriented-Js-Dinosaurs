@@ -2,41 +2,51 @@
     // Create Dino Constructor
 
     /* ???how to define prototype to the Constructor funciton? */
-function Dinos(species, weight, height, diet, where, when, fact){
+function Dinos(species, weight, height, diet, where, when, facts){
     this.species = species
     this.weight = weight
+    this.height = height
     this.diet = diet
     this.where = where
     this.when = when
+    this.facts = facts
+    this.image = `image/${species,toLowerCase()}.png`
+    this.addFact = function (fact) {
+        this.facts.push(fact)
+    }
     this.compareHeight= function (){ }
     this.compareWeight= function (){ }
     this.compareDiet= function (){ }
 
 }
-
+// define proto for human.
     // Create Dino Objects
 
     /* is this to be the real object? */
     let Dino = new Dinos()
 
     // Create Human Object
-    function Human(){
-
+    function Human(name, weight, height, diet){
+        this.name = name
+        this.weight = weight
+        this.height = height
+        this.diet = diet
     }
 
     // Use IIFE to get human data from form
-
 const getHumanData = function(){
-    const humanData= { //this will be refined as the object above
-        name: parseValue("name"),
-        height: parseValue("feet") + parseValue("inches"),
-        weight: parseValue("inches"),
-        diet: parseValue("diet")
-    }
-
+    // let name, height, weight, diet
+    // let humanData= 
+    console.log( "name:", parseValue("name"))
     // console.log("humanData", humanData)
     return (function(){
-        return humanData;  
+            //this will be refined as the object above
+            let name = parseValue("name")
+            let height = parseValue("feet") + parseValue("inches")
+            let weight = parseValue("weight")
+            let diet = parseValue("diet")
+            console.log("human info", {name, height, weight, diet})
+        return new Human(name, weight, height, diet)
     })()
 }
 
@@ -73,17 +83,19 @@ const getHumanData = function(){
 // On button click, prepare and display infographic
 function logSubmit(event) {
     event.preventDefault();
+    console.log("event", event)
     const human = getHumanData();
-    console.log("humanData", human)
+    //the function
+    console.log("human in logSubmit", human)
+
     console.log("hello")
   }
-  
 
-  (function (){
-      document.getElementById('btn').addEventListener('click', logSubmit)
-  })()
+document.getElementById('btn').addEventListener('click', logSubmit)
+ 
 
   //helper functions
   const parseValue = (value) =>{
+      console.log("parseValue", value, document.getElementById(value).value )
     document.getElementById(value).value
 }
