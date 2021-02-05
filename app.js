@@ -1,51 +1,62 @@
-
+// all creature here are vertebrate
+let dinosData = []
+fetch("./dino.json").then(res => res)
+.then(data => dinos = data.Dinos.map(dino => 
+    new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species}, I lived in ${dino.where} during ${dino.when}.`)))
     // Create Dino Constructor
-
     /* ???how to define prototype to the Constructor funciton? */
-function Dinos(species, weight, height, diet, where, when, facts){
+function DinoContructor (species, weight, height, diet, fact, intro) {
+    // const {species, weight, height, diet, fact, intro} = dinoData
     this.species = species
     this.weight = weight
     this.height = height
     this.diet = diet
-    this.where = where
-    this.when = when
-    this.facts = facts
-    this.image = `image/${species,toLowerCase()}.png`
-    this.addFact = function (fact) {
-        this.facts.push(fact)
-    }
-    this.compareHeight= function (){ }
-    this.compareWeight= function (){ }
-    this.compareDiet= function (){ }
-
+    // this.where = where
+    // this.when = when
+    this.fact = fact
+    this.intro = intro
+    // this.image = `image/${species.toLowerCase()}.pn
 }
-// define proto for human.
+
+// add all the necessary prototype functions to DinoConstructor
+DinoContructor.prototype.addFact = function(fact) {
+    this.fact.push(fact)
+}
     // Create Dino Objects
+function Dino(species, weight, height, fact){
+    DinoContructor.call(this, species, weight, height, fact)
+}
+
+// let Dino = new Dinos(species, weight, height, diet,where, when, fact)
 
     /* is this to be the real object? */
-    let Dino = new Dinos()
 
+
+    //there will be prototype in human to compare its with the dinosaur facy
     // Create Human Object
-    function Human(name, weight, height, diet){
-        this.name = name
-        this.weight = weight
-        this.height = height
-        this.diet = diet
-    }
+function Human(name, weight, height, diet){
+    this.name = name
+    this.weight = weight
+    this.height = height
+    this.diet = diet
+    this.compareWeight = function (){}
+    this.compareHeight = function (){}
+    this.compareDiet = function (){}
+}
 
-    // Use IIFE to get human data from form
-const getHumanData = function(){
-    // let name, height, weight, diet
-    // let humanData= 
-    console.log( "name:", parseValue("name"))
-    // console.log("humanData", humanData)
-    return (function(){
-            //this will be refined as the object above
-            let name = parseValue("name")
-            let height = parseValue("feet") + parseValue("inches")
-            let weight = parseValue("weight")
-            let diet = parseValue("diet")
-            console.log("human info", {name, height, weight, diet})
+// or function Human (name, weight, height, diet) {}
+
+//add prototpe functions to Human
+
+// Use IIFE to get human data from form
+let getHumanData = function() {
+  let name, height, weight, diet
+    return (function () {
+        //this will be refined as the object above
+        name = parseValue("name")
+        height = parseValue("feet") + parseValue("inches")
+        weight = parseValue("weight")
+        diet = parseValue("diet")
         return new Human(name, weight, height, diet)
     })()
 }
@@ -63,39 +74,32 @@ const getHumanData = function(){
 
 
     // Generate Tiles for each Dino in Array
-  function generateTiles() {
-      let gridTile = document.createElement("div")
-      gridTile.className("grid-item")
+function generateTiles() {
+    let gridTile = document.createElement("div")
+    gridTile.className("grid-item")
 
-      //add species
+    //add species
 
-      //add images
+    //add images
 
-      //add fact
+    //add fact
 
-      return gridTile
-  }
-        // Add tiles to DOM
+    return gridTile
+}
+    // Add tiles to DOM
 
     // Remove form from screen
 
 
 // On button click, prepare and display infographic
-function logSubmit(event) {
-    event.preventDefault();
-    console.log("event", event)
+document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
     //the function
     console.log("human in logSubmit", human)
-
+    console.log("dinoData", dinoData)
     console.log("hello")
-  }
-
-document.getElementById('btn').addEventListener('click', logSubmit)
+})
  
 
-  //helper functions
-  const parseValue = (value) =>{
-      console.log("parseValue", value, document.getElementById(value).value )
-    document.getElementById(value).value
-}
+//helper functions
+const parseValue = (e) => {document.getElementById(e).value}
