@@ -1,9 +1,87 @@
+const rawDinos =  [
+    {
+        "species": "Triceratops",
+        "weight": 13000,
+        "height": 114,
+        "diet": "herbavor",
+        "where": "North America",
+        "when": "Late Cretaceous",
+        "fact": "First discovered in 1889 by Othniel Charles Marsh"
+    },
+    {
+        "species": "Tyrannosaurus Rex",
+        "weight": 11905,
+        "height": 144,
+        "diet": "carnivor",
+        "where": "North America",
+        "when": "Late Cretaceous",
+        "fact": "The largest known skull measures in at 5 feet long."
+    },
+    {
+        "species": "Anklyosaurus",
+        "weight": 10500,
+        "height": 55,
+        "diet": "herbavor",
+        "where": "North America",
+        "when": "Late Cretaceous",
+        "fact": "Anklyosaurus survived for approximately 135 million years."
+    },
+    {
+        "species": "Brachiosaurus",
+        "weight": 70000,
+        "height": "372",
+        "diet": "herbavor",
+        "where": "North America",
+        "when": "Late Jurasic",
+        "fact": "An asteroid was named 9954 Brachiosaurus in 1991."
+    },
+    {
+        "species": "Stegosaurus",
+        "weight": 11600,
+        "height": 79,
+        "diet": "herbavor",
+        "where": "North America, Europe, Asia",
+        "when": "Late Jurasic to Early Cretaceous",
+        "fact": "The Stegosaurus had between 17 and 22 seperate places and flat spines."
+    },
+    {
+        "species": "Elasmosaurus",
+        "weight": 16000,
+        "height": 59,
+        "diet": "carnivor",
+        "where": "North America",
+        "when": "Late Cretaceous",
+        "fact": "Elasmosaurus was a marine reptile first discovered in Kansas."
+    },
+    {
+        "species": "Pteranodon",
+        "weight": 44,
+        "height": 20,
+        "diet": "carnivor",
+        "where": "North America",
+        "when": "Late Cretaceous",
+        "fact": "Actually a flying reptile, the Pteranodon is not a dinosaur."
+    },
+    {
+        "species": "Pigeon",
+        "weight": 0.5,
+        "height": 9,
+        "diet": "herbavor",
+        "where": "World Wide",
+        "when": "Holocene",
+        "fact": "All birds are living dinosaurs."
+    }
+]
+
+
 // all creature here are vertebrate
-let dinosData = []
-fetch("dino.json")
-    .then(res => res.json())
-    .then(data => dinosData = data.Dinos.map(dino => new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`))
-)
+// let dinosData = []
+let dinosData = rawDinos.map((dino => new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`)))
+
+// fetch("dino.json")
+//     .then(res => res.json())
+//     .then(data => dinosData = data.Dinos.map(dino => new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`))
+// )
     // Create Dino Constructor
     /* ???how to define prototype to the Constructor funciton? */
 function DinoContructor (species, weight, height, diet, fact, intro) {
@@ -16,7 +94,7 @@ function DinoContructor (species, weight, height, diet, fact, intro) {
     // this.when = when
     this.fact = fact
     this.intro = intro
-    // this.image = `image/${species.toLowerCase()}.pn
+    this.image = `image/${species.toLowerCase()}.png`
 }
 
 // add all the necessary prototype functions to DinoConstructor
@@ -74,30 +152,30 @@ let getHumanData = function() {
 
     // Generate Tiles for each Dino in Array
 function generateTiles(species, imagePath, fact, intro) {
-    let gridTileCard = document.createElement("div")
-    gridTile.className("grid-item")
+    let gridTile = document.createElement("div")
+    gridTile.className = "grid-item"
 
     //add species, imagePatch, fact & intro div
     let speciesDiv = document.createElement("h1")
     speciesDiv.innterText = species
-    gridTileCard.appendChild(speciesDiv)
+    gridTile.appendChild(speciesDiv)
 
     let imagesDiv = document.createElement("img")
     imagesDiv.src = imagePath
-    gridTileCard.appendChild(imagesDiv)
+    gridTile.appendChild(imagesDiv)
 
     // only dinosaurs include fact and intro
     if (fact && intro) {
         let factDiv = document.createElement("p")
         factDiv.innerText = fact
-        gridTileCard.appendChild(factDiv)
+        gridTile.appendChild(factDiv)
 
         let introDiv = document.createElement("p")
         introDiv.innerText = intro
-        gridTileCard.appendChild(introDiv)
+        gridTile.appendChild(introDiv)
     }
     
-    return gridTileCard
+    return gridTile
 }
     // Add tiles to DOM
 
@@ -108,8 +186,12 @@ function generateTiles(species, imagePath, fact, intro) {
 document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
     //the function
+    dinosData.forEach((i, dino) => {
+        let dinoCard = generateTiles(dino.species, dino.image, dino.fact, dino.intro)
+        document.getElementBtId("grid").appendChild(dinoCard)
+    })
     console.log("human in logSubmit", human)
-    console.log("dinoData", dinoDatas)
+
     console.log("hello")
 })
  
