@@ -94,7 +94,7 @@ function DinoContructor (species, weight, height, diet, fact, intro) {
     // this.when = when
     this.fact = fact
     this.intro = intro
-    this.image = `image/${species.toLowerCase()}.png`
+    this.image = `images/${species.toLowerCase()}.png`
 }
 
 // add all the necessary prototype functions to DinoConstructor
@@ -186,10 +186,14 @@ function generateTiles(species, imagePath, fact, intro) {
 document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
     //the function
-    dinosData.forEach((i, dino) => {
+    console.log("dinosData", dinosData)
+    dinosData.forEach((dino, i) => {
+        console.log("dino", dino)
         let dinoCard = generateTiles(dino.species, dino.image, dino.fact, dino.intro)
-        document.getElementBtId("grid").appendChild(dinoCard)
+        document.getElementById("grid").appendChild(dinoCard)
     })
+
+    document.getElementById("dino-compare").style.display = "none"
     console.log("human in logSubmit", human)
 
     console.log("hello")
