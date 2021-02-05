@@ -1,8 +1,9 @@
 // all creature here are vertebrate
 let dinosData = []
-fetch("./dino.json").then(res => res)
-.then(data => dinos = data.Dinos.map(dino => 
-    new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species}, I lived in ${dino.where} during ${dino.when}.`)))
+fetch("dino.json")
+    .then(res => res.json())
+    .then(data => dinosData = data.Dinos.map(dino => new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`))
+)
     // Create Dino Constructor
     /* ???how to define prototype to the Constructor funciton? */
 function DinoContructor (species, weight, height, diet, fact, intro) {
@@ -44,8 +45,6 @@ function Human(name, weight, height, diet){
     this.compareDiet = function (){}
 }
 
-// or function Human (name, weight, height, diet) {}
-
 //add prototpe functions to Human
 
 // Use IIFE to get human data from form
@@ -74,17 +73,31 @@ let getHumanData = function() {
 
 
     // Generate Tiles for each Dino in Array
-function generateTiles() {
-    let gridTile = document.createElement("div")
+function generateTiles(species, imagePath, fact, intro) {
+    let gridTileCard = document.createElement("div")
     gridTile.className("grid-item")
 
-    //add species
+    //add species, imagePatch, fact & intro div
+    let speciesDiv = document.createElement("h1")
+    speciesDiv.innterText = species
+    gridTileCard.appendChild(speciesDiv)
 
-    //add images
+    let imagesDiv = document.createElement("img")
+    imagesDiv.src = imagePath
+    gridTileCard.appendChild(imagesDiv)
 
-    //add fact
+    // only dinosaurs include fact and intro
+    if (fact && intro) {
+        let factDiv = document.createElement("p")
+        factDiv.innerText = fact
+        gridTileCard.appendChild(factDiv)
 
-    return gridTile
+        let introDiv = document.createElement("p")
+        introDiv.innerText = intro
+        gridTileCard.appendChild(introDiv)
+    }
+    
+    return gridTileCard
 }
     // Add tiles to DOM
 
@@ -96,10 +109,11 @@ document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
     //the function
     console.log("human in logSubmit", human)
-    console.log("dinoData", dinoData)
+    console.log("dinoData", dinoDatas)
     console.log("hello")
 })
  
 
 //helper functions
 const parseValue = (e) => {document.getElementById(e).value}
+//could create a helper to create element and append child
