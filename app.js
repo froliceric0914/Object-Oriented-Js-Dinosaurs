@@ -78,43 +78,40 @@ const rawDinos = [
 // let dinosData = []
 let dinosData = rawDinos.map(
     (dino) =>
-        new DinoContructor(
-            dino.species,
-            dino.weight,
-            dino.height,
-            dino.diet,
-            `Fact: I am ${dino.species} and lived in ${dino.where}, during ${dino.when}. ${dino.fact}`
-        )
+        new Vertebrate(dino.species, dino.weight, dino.height, dino.diet, [
+            `${dino.fact}`,
+            `${dino.species} used to live in ${dino.when}`,
+            `${dino.species} used to live during ${dino.where}`,
+        ])
 );
 
 // fetch("dino.json")
 //     .then(res => res.json())
-//     .then(data => dinosData = data.Dinos.map(dino => new DinoContructor(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`))
+//     .then(data => dinosData = data.Dinos.map(dino => new Vertebrate(dino.species, dino.weight, dino.height, dino.diet, dino.fact, `I am ${dino.species} and lived in ${dino.where}, during ${dino.when}.`))
 // )
 // Create Dino Constructor
 /* ???how to define prototype to the Constructor funciton? */
-function DinoContructor(species, weight, height, diet, fact) {
+function Vertebrate(species, weight, height, diet, facts) {
     // const {species, weight, height, diet, fact, intro} = dinoData
     this.species = species;
     this.weight = weight;
     this.height = height;
     this.diet = diet;
-    // this.where = where
-    // this.when = when
-    this.fact = fact;
+    this.fact = facts;
+    // this.isHuman = isHuman ? isHuman : false;
     this.image = `images/${species.toLowerCase()}.png`;
 }
 
 // add all the necessary prototype functions to DinoConstructor
-DinoContructor.prototype.addFact = function (fact) {
-    this.fact.push(fact);
+Vertebrate.prototype.addFact = function (fact) {
+    this.facts.push(fact);
 };
-// Create Dino Objects
-function Dino(species, weight, height, fact) {
-    DinoContructor.call(this, species, weight, height, fact);
-}
 
-// let Dino = new Dinos(species, weight, height, diet,where, when, fact)
+// Create Dino Objects
+function Dino(species, weight, height, facts) {
+    Vertebrate.call(this, species, weight, height, facts);
+}
+// add three random fact compare functions w. human
 
 /* is this to be the real object? */
 
@@ -122,15 +119,15 @@ function Dino(species, weight, height, fact) {
 // Create Human Object
 function Human(name, weight, height, diet) {
     this.name = name;
-    this.weight = weight;
-    this.height = height;
-    this.diet = diet;
-    this.compareWeight = function () {};
-    this.compareHeight = function () {};
-    this.compareDiet = function () {};
+    Vertebrate.call(this, 'human', weight, height, diet, []);
 }
 
 //add prototpe functions to Human
+/*
+    this.compareWeight = function () {};
+    this.compareHeight = function () {};
+    this.compareDiet = function () {};
+*/
 
 // Use IIFE to get human data from form
 let getHumanData = function () {
@@ -155,21 +152,21 @@ let getHumanData = function () {
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
 // Generate Tiles for each Dino in Array
-function generateTiles(species, imagePath, fact) {
+function generateTiles(species, imagePath, facts, name) {
     let gridTile = document.createElement('div');
     gridTile.className = 'grid-item';
 
-    //add species, imagePatch, fact & intro div
-    let speciesDiv = document.createElement('h1');
-    speciesDiv.innterText = species;
+    let speciesDiv = document.createElement('h3');
+    speciesDiv.innerText = species === 'human' ? name : species;
     gridTile.appendChild(speciesDiv);
 
     let imagesDiv = document.createElement('img');
     imagesDiv.src = imagePath;
     gridTile.appendChild(imagesDiv);
 
-    // only dinosaurs include fact and intro
-    if (fact) {
+    // only dinosaurs include facts
+    if (facts) {
+        //pick one facts out of six
         let factDiv = document.createElement('p');
         factDiv.innerText = fact;
         gridTile.appendChild(factDiv);
@@ -186,20 +183,22 @@ document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
     //the function
     console.log('dinosData', dinosData);
-    dinosData.forEach((dino, i) => {
-        console.log('dino', dino);
-        let dinoCard = generateTiles(dino.species, dino.image, dino.fact);
+    console.log('human', human);
+    //insert human in the center
+    dinosData.splice(4, 0, human);
+    dinosData.forEach((dino) => {
+        let dinoCard = generateTiles(
+            dino.species,
+            dino.image,
+            dino.facts,
+            dino.name
+        );
         document.getElementById('grid').appendChild(dinoCard);
     });
 
     document.getElementById('dino-compare').style.display = 'none';
-    console.log('human in logSubmit', human);
-
-    console.log('hello');
 });
 
 //helper functions
-const parseValue = (e) => {
-    document.getElementById(e).value;
-};
+const parseValue = (e) => document.getElementById(e).value;
 //could create a helper to create element and append child
