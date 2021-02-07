@@ -107,7 +107,8 @@ function Vertebrate(species, weight, height, diet, facts) {
     this.weight = weight;
     this.height = height;
     this.diet = diet;
-    this.fact = facts;
+    this.facts = facts;
+    this.newFact;
     this.image = `images/${species.toLowerCase()}.png`;
 }
 
@@ -115,16 +116,14 @@ function Vertebrate(species, weight, height, diet, facts) {
 Vertebrate.prototype.addFact = function (fact) {
     this.facts.push(fact);
 };
+// let Dino = new Vertebrate(species, weight, height, diet, facts)
 
 // Create Dino Objects
 function Dino(species, weight, height, facts) {
     Vertebrate.call(this, species, weight, height, facts);
-    // this.compareHeight = function () {
-
-    // };
 }
 
-Dino.prototype.compareHeight = function (humanHeight) {
+Vertebrate.prototype.compareHeight = function (humanHeight) {
     let newFact;
     if (humanHeight >= this.height) {
         newFact = `You are ${humanHeight / this.height} higher than ${
@@ -138,7 +137,7 @@ Dino.prototype.compareHeight = function (humanHeight) {
     this.addFact(newFact);
 };
 
-Dino.prototype.compareDiet = function (humanDiet) {
+Vertebrate.prototype.compareDiet = function (humanDiet) {
     let newFact =
         this.compareDiet === humanDiet
             ? `We are both ${humanDiet}`
@@ -146,7 +145,7 @@ Dino.prototype.compareDiet = function (humanDiet) {
     this.addFact(newFact);
 };
 
-Dino.prototype.campareWeight = function (humanWeight) {
+Vertebrate.prototype.compareWeight = function (humanWeight) {
     let newFact;
     if (humanWeight >= this.weight) {
         newFact = `You are ${humanWeight / this.weight} heavier than ${
@@ -160,30 +159,17 @@ Dino.prototype.campareWeight = function (humanWeight) {
     this.addFact(newFact);
 };
 
-// add three random fact compare functions w. human
-
-/* is this to be the real object? */
-
-//there will be prototype in human to compare its with the dinosaur facy
 // Create Human Object
 function Human(name, weight, height, diet) {
     this.name = name;
     //recalculate human height to another number
-    Vertebrate.call(this, 'human', weight, height, diet, []);
+    Vertebrate.call(this, 'human', weight, height, diet, null);
 }
-
-//add prototpe functions to Human
-/*
-    this.compareWeight = function () {};
-    this.compareHeight = function () {};
-    this.compareDiet = function () {};
-*/
 
 // Use IIFE to get human data from form
 let getHumanData = function () {
     let name, height, weight, diet;
     return (function () {
-        //this will be refined as the object above
         name = parseValue('name');
         height =
             parseInt(parseValue('feet')) * 12 + parseInt(parseValue('inches'));
@@ -217,6 +203,10 @@ function generateTiles(species, imagePath, facts, name) {
 
     // only dinosaurs include facts
     if (facts) {
+        let fact =
+            species === 'Pigeon'
+                ? facts[0]
+                : facts[Math.floor(Math.random() * 6)];
         //pick one facts out of six
         let factDiv = document.createElement('p');
         factDiv.innerText = fact;
@@ -232,23 +222,30 @@ function generateTiles(species, imagePath, facts, name) {
 // On button click, prepare and display infographic
 document.getElementById('btn').addEventListener('click', function () {
     const human = getHumanData();
-    //the function
-    console.log('dinosData', dinosData);
-    console.log('human', human);
 
     //insert human in the center
     dinosData.splice(4, 0, human);
+    console.log('dinosData', dinosData);
 
-    dinosData.forEach((dino) => {
+    dinosData.map((dino) => {
         // dino Object need to compare the fact with human and generate the fact
         //pick up a random from the 6 facts from the facts array
-        let fact =
-            dino.species === 'Pigeon'
-                ? dino.facts[0]
-                : dino.facts[Math.floor(Math.random() * 6)];
-        let dinoCard = generateTiles(dino.species, dino.image, fact, dino.name);
+        if (dino.facts) {
+            dino.compareHeight(human.height);
+            dino.compareWeight(human.weight);
+            dino.compareDiet(human.diet);
+        }
+
+        dinoCard = generateTiles(
+            dino.species,
+            dino.image,
+            dino.facts,
+            dino.name
+        );
         document.getElementById('grid').appendChild(dinoCard);
+        // new Dino(dino.species, dino.weight, dino.height, dino.facts);
     });
+    console.log('dinosData', dinosData);
 
     document.getElementById('dino-compare').style.display = 'none';
 });
