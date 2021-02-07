@@ -75,7 +75,6 @@ const rawDinos = [
 ];
 
 // all creature here are vertebrate
-// let dinosData = []
 let dinosData = rawDinos.map((dino) => {
     let modifiedFacts;
     if (dino.species === 'Pigeon') {
@@ -116,7 +115,6 @@ function Vertebrate(species, weight, height, diet, facts) {
 Vertebrate.prototype.addFact = function (fact) {
     this.facts.push(fact);
 };
-// let Dino = new Vertebrate(species, weight, height, diet, facts)
 
 // Create Dino Objects
 function Dino(species, weight, height, facts) {
@@ -124,45 +122,42 @@ function Dino(species, weight, height, facts) {
 }
 
 Vertebrate.prototype.compareHeight = function (humanHeight) {
-    let newFact;
     if (humanHeight >= this.height) {
-        newFact = `You are ${humanHeight / this.height} higher than ${
-            this.species
-        }`;
+        this.newFact = `You are ${Math.round(
+            humanHeight / this.height
+        )} times higher than ${this.species}`;
     } else {
-        newFact = `${this.species} are ${
+        this.newFact = `${this.species} are ${Math.round(
             this.height / humanHeight
-        } higher than you`;
+        )} times higher than you`;
     }
-    this.addFact(newFact);
+    this.addFact(this.newFact);
 };
 
 Vertebrate.prototype.compareDiet = function (humanDiet) {
-    let newFact =
+    this.newFact =
         this.compareDiet === humanDiet
             ? `We are both ${humanDiet}`
             : `${this.species} are ${this.diet}, while you are ${humanDiet}`;
-    this.addFact(newFact);
+    this.addFact(this.newFact);
 };
 
 Vertebrate.prototype.compareWeight = function (humanWeight) {
-    let newFact;
     if (humanWeight >= this.weight) {
-        newFact = `You are ${humanWeight / this.weight} heavier than ${
-            this.species
-        }`;
+        this.newFact = `You are ${Math.round(
+            humanWeight / this.weight
+        )} times heavier than ${this.species}`;
     } else {
-        newFact = `${this.species} are ${
+        this.newFact = `${this.species} are ${Math.round(
             this.weight / humanWeight
-        } heavier than you`;
+        )} times heavier than you`;
     }
-    this.addFact(newFact);
+    this.addFact(this.newFact);
 };
 
 // Create Human Object
 function Human(name, weight, height, diet) {
     this.name = name;
-    //recalculate human height to another number
     Vertebrate.call(this, 'human', weight, height, diet, null);
 }
 
@@ -179,14 +174,43 @@ let getHumanData = function () {
     })();
 };
 
-// Create Dino Compare Method 1
-// NOTE: Weight in JSON file is in lbs, height in inches.
+// On button click, prepare and display infographic
+document.getElementById('btn').addEventListener('click', function () {
+    const human = getHumanData();
 
-// Create Dino Compare Method 2
-// NOTE: Weight in JSON file is in lbs, height in inches.
+    //insert human in the center
+    dinosData.splice(4, 0, human);
+    console.log('dinosData', dinosData);
 
-// Create Dino Compare Method 3
-// NOTE: Weight in JSON file is in lbs, height in inches.
+    dinosData.map((dino) => {
+        // generate 3 new facts compared to human info
+        if (dino.facts) {
+            dino.compareHeight(human.height);
+            dino.compareWeight(human.weight);
+            dino.compareDiet(human.diet);
+        }
+
+        //generate the tile
+        dinoCard = generateTiles(
+            dino.species,
+            dino.image,
+            dino.facts,
+            dino.name
+        );
+
+        // Add tiles to DOM
+        document.getElementById('grid').appendChild(dinoCard);
+    });
+
+    //can i generate the tile at once?
+    // Remove form from screen
+    document.getElementById('dino-compare').style.display = 'none';
+});
+
+/* helper functions */
+
+//parse the value from form input
+const parseValue = (e) => document.getElementById(e).value;
 
 // Generate Tiles for each Dino in Array
 function generateTiles(species, imagePath, facts, name) {
@@ -203,11 +227,11 @@ function generateTiles(species, imagePath, facts, name) {
 
     // only dinosaurs include facts
     if (facts) {
+        //pick up a random from the 6 facts from the facts array unless it is a pigeon
         let fact =
             species === 'Pigeon'
                 ? facts[0]
                 : facts[Math.floor(Math.random() * 6)];
-        //pick one facts out of six
         let factDiv = document.createElement('p');
         factDiv.innerText = fact;
         gridTile.appendChild(factDiv);
@@ -215,41 +239,10 @@ function generateTiles(species, imagePath, facts, name) {
 
     return gridTile;
 }
-// Add tiles to DOM
 
-// Remove form from screen
-
-// On button click, prepare and display infographic
-document.getElementById('btn').addEventListener('click', function () {
-    const human = getHumanData();
-
-    //insert human in the center
-    dinosData.splice(4, 0, human);
-    console.log('dinosData', dinosData);
-
-    dinosData.map((dino) => {
-        // dino Object need to compare the fact with human and generate the fact
-        //pick up a random from the 6 facts from the facts array
-        if (dino.facts) {
-            dino.compareHeight(human.height);
-            dino.compareWeight(human.weight);
-            dino.compareDiet(human.diet);
-        }
-
-        dinoCard = generateTiles(
-            dino.species,
-            dino.image,
-            dino.facts,
-            dino.name
-        );
-        document.getElementById('grid').appendChild(dinoCard);
-        // new Dino(dino.species, dino.weight, dino.height, dino.facts);
-    });
-    console.log('dinosData', dinosData);
-
-    document.getElementById('dino-compare').style.display = 'none';
-});
-
-//helper functions
-const parseValue = (e) => document.getElementById(e).value;
-//could create a helper to create element and append child
+//
+// function errorMsg(value) {
+//     if (value === ''{
+//        errorMsg.innerHTML = <>
+//    })
+// }
