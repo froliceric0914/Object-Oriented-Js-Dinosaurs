@@ -76,14 +76,25 @@ const rawDinos = [
 
 // all creature here are vertebrate
 // let dinosData = []
-let dinosData = rawDinos.map(
-    (dino) =>
-        new Vertebrate(dino.species, dino.weight, dino.height, dino.diet, [
+let dinosData = rawDinos.map((dino) => {
+    let modifiedFacts;
+    if (dino.species === 'Pigeon') {
+        modifiedFacts = [`${dino.fact}`];
+    } else {
+        modifiedFacts = [
             `${dino.fact}`,
             `${dino.species} used to live in ${dino.when}`,
             `${dino.species} used to live during ${dino.where}`,
-        ])
-);
+        ];
+    }
+    return new Vertebrate(
+        dino.species,
+        dino.weight,
+        dino.height,
+        dino.diet,
+        modifiedFacts
+    );
+});
 
 // fetch("dino.json")
 //     .then(res => res.json())
@@ -92,13 +103,11 @@ let dinosData = rawDinos.map(
 // Create Dino Constructor
 /* ???how to define prototype to the Constructor funciton? */
 function Vertebrate(species, weight, height, diet, facts) {
-    // const {species, weight, height, diet, fact, intro} = dinoData
     this.species = species;
     this.weight = weight;
     this.height = height;
     this.diet = diet;
     this.fact = facts;
-    // this.isHuman = isHuman ? isHuman : false;
     this.image = `images/${species.toLowerCase()}.png`;
 }
 
@@ -110,7 +119,47 @@ Vertebrate.prototype.addFact = function (fact) {
 // Create Dino Objects
 function Dino(species, weight, height, facts) {
     Vertebrate.call(this, species, weight, height, facts);
+    // this.compareHeight = function () {
+
+    // };
 }
+
+Dino.prototype.compareHeight = function (humanHeight) {
+    let newFact;
+    if (humanHeight >= this.height) {
+        newFact = `You are ${humanHeight / this.height} higher than ${
+            this.species
+        }`;
+    } else {
+        newFact = `${this.species} are ${
+            this.height / humanHeight
+        } higher than you`;
+    }
+    this.addFact(newFact);
+};
+
+Dino.prototype.compareDiet = function (humanDiet) {
+    let newFact =
+        this.compareDiet === humanDiet
+            ? `We are both ${humanDiet}`
+            : `${this.species} are ${this.diet}, while you are ${humanDiet}`;
+    this.addFact(newFact);
+};
+
+Dino.prototype.campareWeight = function (humanWeight) {
+    let newFact;
+    if (humanWeight >= this.weight) {
+        newFact = `You are ${humanWeight / this.weight} heavier than ${
+            this.species
+        }`;
+    } else {
+        newFact = `${this.species} are ${
+            this.weight / humanWeight
+        } heavier than you`;
+    }
+    this.addFact(newFact);
+};
+
 // add three random fact compare functions w. human
 
 /* is this to be the real object? */
@@ -119,6 +168,7 @@ function Dino(species, weight, height, facts) {
 // Create Human Object
 function Human(name, weight, height, diet) {
     this.name = name;
+    //recalculate human height to another number
     Vertebrate.call(this, 'human', weight, height, diet, []);
 }
 
@@ -135,7 +185,8 @@ let getHumanData = function () {
     return (function () {
         //this will be refined as the object above
         name = parseValue('name');
-        height = parseValue('feet') + parseValue('inches');
+        height =
+            parseInt(parseValue('feet')) * 12 + parseInt(parseValue('inches'));
         weight = parseValue('weight');
         diet = parseValue('diet');
         return new Human(name, weight, height, diet);
@@ -184,15 +235,18 @@ document.getElementById('btn').addEventListener('click', function () {
     //the function
     console.log('dinosData', dinosData);
     console.log('human', human);
+
     //insert human in the center
     dinosData.splice(4, 0, human);
+
     dinosData.forEach((dino) => {
-        let dinoCard = generateTiles(
-            dino.species,
-            dino.image,
-            dino.facts,
-            dino.name
-        );
+        // dino Object need to compare the fact with human and generate the fact
+        //pick up a random from the 6 facts from the facts array
+        let fact =
+            dino.species === 'Pigeon'
+                ? dino.facts[0]
+                : dino.facts[Math.floor(Math.random() * 6)];
+        let dinoCard = generateTiles(dino.species, dino.image, fact, dino.name);
         document.getElementById('grid').appendChild(dinoCard);
     });
 
