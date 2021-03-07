@@ -1,35 +1,3 @@
-// import dino json and invoke Dino contructor
-let dinosData;
-fetch('dino.json', {
-    headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-    },
-})
-    .then((res) => res.json())
-    .then(
-        (data) =>
-            (dinosData = data.Dinos.map((dino) => {
-                let modifiedFacts;
-                if (dino.species === 'Pigeon') {
-                    modifiedFacts = [`${dino.fact}`];
-                } else {
-                    modifiedFacts = [
-                        `${dino.fact}`,
-                        `${dino.species} used to live in ${dino.when}`,
-                        `${dino.species} used to live during ${dino.where}`,
-                    ];
-                }
-                return new Dino(
-                    dino.species,
-                    dino.weight,
-                    dino.height,
-                    dino.diet,
-                    modifiedFacts
-                );
-            }))
-    );
-
 // Create Dino Constructor
 function Vertebrate(species, weight, height, diet, facts) {
     this.species = species;
@@ -105,37 +73,40 @@ let getHumanData = function () {
     })();
 };
 
-// On button click, prepare and display infographic
-document.getElementById('btn').addEventListener('click', function () {
-    const human = getHumanData();
-    //insert human in the center
-    dinosData.splice(4, 0, human);
-
-    dinosData.map((dino) => {
-        // generate 3 new facts compared to human info
-        if (dino.facts) {
-            dino.compareHeight(human.height);
-            dino.compareWeight(human.weight);
-            dino.compareDiet(human.diet);
-        }
-
-        //generate the tile
-        dinoCard = generateTiles(
-            dino.species,
-            dino.image,
-            dino.facts,
-            dino.name
-        );
-
-        // Add each tile to DOM
-        document.getElementById('grid').appendChild(dinoCard);
-    });
-
-    // Remove form from screen
-    document.getElementById('dino-compare').style.display = 'none';
-});
+// import dino json and invoke Dino contructor
+let dinosData;
+fetch('dino.json', {
+    headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+    },
+})
+    .then((res) => res.json())
+    .then(
+        (data) =>
+            (dinosData = data.Dinos.map((dino) => {
+                let modifiedFacts;
+                if (dino.species === 'Pigeon') {
+                    modifiedFacts = [`${dino.fact}`];
+                } else {
+                    modifiedFacts = [
+                        `${dino.fact}`,
+                        `${dino.species} used to live in ${dino.when}`,
+                        `${dino.species} used to live during ${dino.where}`,
+                    ];
+                }
+                return new Dino(
+                    dino.species,
+                    dino.weight,
+                    dino.height,
+                    dino.diet,
+                    modifiedFacts
+                );
+            }))
+    );
 
 /* helper functions */
+
 //parse the value from form input
 const parseValue = (e) => document.getElementById(e).value;
 
@@ -166,3 +137,35 @@ function generateTiles(species, imagePath, facts, name) {
 
     return gridTile;
 }
+
+// On button click, prepare and display infographic
+document.getElementById('btn').addEventListener('click', function () {
+    const human = getHumanData();
+    //insert human in the center
+    dinosData.splice(4, 0, human);
+    const fragment = document.createDocumentFragment();
+
+    dinosData.map((dino) => {
+        // generate 3 new facts compared to human info
+        if (dino.facts) {
+            dino.compareHeight(human.height);
+            dino.compareWeight(human.weight);
+            dino.compareDiet(human.diet);
+        }
+
+        //generate the tile and append to fragment
+        dinoCard = generateTiles(
+            dino.species,
+            dino.image,
+            dino.facts,
+            dino.name
+        );
+        fragment.appendChild(dinoCard);
+    });
+
+    // Add fragment tile to DOM
+    document.getElementById('grid').appendChild(fragment);
+
+    // Remove form from screen
+    document.getElementById('dino-compare').style.display = 'none';
+});
